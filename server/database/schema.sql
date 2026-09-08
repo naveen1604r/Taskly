@@ -1,5 +1,4 @@
 -- ==========================================================
--- Taskly Database Initialization Schema (Step 25 Foundation)
 -- ==========================================================
 
 -- 1. Create Database
@@ -9,7 +8,6 @@ CREATE DATABASE IF NOT EXISTS taskly
 
 USE taskly;
 
--- 2. Users Table (Step 26 Authentication)
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -24,7 +22,7 @@ CREATE TABLE IF NOT EXISTS users (
   INDEX idx_users_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 3. Tasks Table (Step 27 Migration)
+-- 3. Tasks Table 
 CREATE TABLE IF NOT EXISTS tasks (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -60,7 +58,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   INDEX idx_tasks_planned_date (planned_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 4. Subtasks Table (Step 27 Migration)
+-- 4. Subtasks Table 
 CREATE TABLE IF NOT EXISTS subtasks (
   id INT AUTO_INCREMENT PRIMARY KEY,
   task_id INT NOT NULL,
@@ -78,7 +76,7 @@ CREATE TABLE IF NOT EXISTS subtasks (
   INDEX idx_subtasks_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 5. Task Dependencies Table (Step 27 Migration)
+-- 5. Task Dependencies Table 
 CREATE TABLE IF NOT EXISTS task_dependencies (
   id INT AUTO_INCREMENT PRIMARY KEY,
   task_id INT NOT NULL,
@@ -94,7 +92,7 @@ CREATE TABLE IF NOT EXISTS task_dependencies (
   INDEX idx_task_dep_user (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 6. Goals Table (Step 28 Migration)
+-- 6. Goals Table 
 CREATE TABLE IF NOT EXISTS goals (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -122,7 +120,7 @@ CREATE TABLE IF NOT EXISTS goals (
   INDEX idx_goals_target_date (target_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 7. Projects Table (Step 28 Migration)
+-- 7. Projects Table 
 CREATE TABLE IF NOT EXISTS projects (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -145,7 +143,7 @@ CREATE TABLE IF NOT EXISTS projects (
   INDEX idx_projects_goal_id (goal_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 8. Notes Table (Step 28 Migration)
+-- 8. Notes Table 
 CREATE TABLE IF NOT EXISTS notes (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -169,7 +167,7 @@ CREATE TABLE IF NOT EXISTS notes (
   INDEX idx_notes_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 9. Focus Sessions Table (Step 29 Migration)
+-- 9. Focus Sessions Table 
 CREATE TABLE IF NOT EXISTS focus_sessions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -190,7 +188,7 @@ CREATE TABLE IF NOT EXISTS focus_sessions (
   INDEX idx_focus_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 10. Focus Settings Table (Step 29 Migration)
+-- 10. Focus Settings Table 
 CREATE TABLE IF NOT EXISTS focus_settings (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL UNIQUE,
@@ -208,7 +206,7 @@ CREATE TABLE IF NOT EXISTS focus_settings (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 11. Habits Table (Step 29 Migration)
+-- 11. Habits Table 
 CREATE TABLE IF NOT EXISTS habits (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -235,7 +233,7 @@ CREATE TABLE IF NOT EXISTS habits (
   INDEX idx_habits_category (category)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 12. Habit Logs Table (Step 29 Migration)
+-- 12. Habit Logs Table 
 CREATE TABLE IF NOT EXISTS habit_logs (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -254,7 +252,7 @@ CREATE TABLE IF NOT EXISTS habit_logs (
   INDEX idx_habit_logs_user_date (user_id, log_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 13. Recurring Tasks Table (Step 29 Migration)
+-- 13. Recurring Tasks Table 
 CREATE TABLE IF NOT EXISTS recurring_tasks (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -277,7 +275,7 @@ CREATE TABLE IF NOT EXISTS recurring_tasks (
   INDEX idx_recurring_enabled (enabled)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 14. Recurring Task Occurrences Table (Step 29 Migration)
+-- 14. Recurring Task Occurrences Table 
 CREATE TABLE IF NOT EXISTS recurring_task_occurrences (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -294,7 +292,7 @@ CREATE TABLE IF NOT EXISTS recurring_task_occurrences (
   INDEX idx_occurrences_date (occurrence_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 15. Reminders Table (Step 29 Migration)
+-- 15. Reminders Table 
 CREATE TABLE IF NOT EXISTS reminders (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -317,7 +315,7 @@ CREATE TABLE IF NOT EXISTS reminders (
   INDEX idx_reminders_enabled (enabled)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 16. Notifications Table (Step 29 Migration)
+-- 16. Notifications Table 
 CREATE TABLE IF NOT EXISTS notifications (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -339,7 +337,7 @@ CREATE TABLE IF NOT EXISTS notifications (
   INDEX idx_notif_event_key (event_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 17. Activities Table (Step 29 Migration)
+-- 17. Activities Table 
 CREATE TABLE IF NOT EXISTS activities (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -362,7 +360,7 @@ CREATE TABLE IF NOT EXISTS activities (
   INDEX idx_activities_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 18. Inbox Items Table (Step 29 Migration)
+-- 18. Inbox Items Table 
 CREATE TABLE IF NOT EXISTS inbox_items (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
