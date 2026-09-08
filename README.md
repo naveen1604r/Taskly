@@ -51,28 +51,8 @@ cd ..
    ```
    *(Note: The server also auto-runs all migrations in `server/database/migrations/` on startup if tables are absent).*
 
-### 4. Environment Variables
 
-#### Frontend Configuration (`.env`)
-Create `.env` in the project root:
-```env
-VITE_API_URL=http://localhost:5000/api
-```
 
-#### Backend Configuration (`server/.env`)
-Create `server/.env`:
-```env
-NODE_ENV=development
-PORT=5000
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=taskly
-DB_USER=root
-DB_PASSWORD=your_mysql_password
-CLIENT_URL=http://localhost:5173
-JWT_SECRET=your_development_secret_change_in_production
-JWT_EXPIRES_IN=7d
-```
 
 ### 5. Running in Development
 
@@ -87,29 +67,11 @@ npm run dev
 
 ---
 
-## Production Deployment
 
-### 1. Production Environment Variables
-
-#### Backend (`server/.env`)
-```env
-NODE_ENV=production
-PORT=5000
-DB_HOST=mysql.internal.yourhost.com
-DB_PORT=3306
-DB_NAME=taskly
-DB_USER=taskly_app
-DB_PASSWORD=strong_production_db_password
-CLIENT_URL=https://app.yourdomain.com
-JWT_SECRET=super_strong_cryptographic_random_secret_at_least_32_chars
-JWT_EXPIRES_IN=7d
-```
 > **Validation**: The backend performs startup environment validation. In `NODE_ENV=production`, startup will safely abort if `JWT_SECRET`, `DB_HOST`, `DB_USER`, `DB_NAME`, or `CLIENT_URL` are missing or default.
 
-#### Frontend Build Configuration (`.env.production`)
-```env
-VITE_API_URL=https://api.yourdomain.com/api
-```
+
+
 
 ### 2. Database Migrations
 Before deploying the API, run all incremental migrations against the production database:
