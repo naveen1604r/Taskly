@@ -89,6 +89,11 @@ export const createRateLimiter = (options = {}) => {
       return next();
     }
 
+    // Do not count preflight OPTIONS requests towards rate limit
+    if (req.method === 'OPTIONS') {
+      return next();
+    }
+
     const key = keyGenerator(req);
     const { count, resetTime } = store.increment(key);
     const remaining = Math.max(0, max - count);

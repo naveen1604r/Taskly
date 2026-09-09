@@ -34,27 +34,43 @@ app.use(
 );
 
 // 4. CORS Configuration
-// In production, strictly restrict to CLIENT_URL. In development, allow localhost/127.0.0.1.
+// In production, strictly restrict to CLIENT_URL. In development, allow localhost/127.0.0.1/[::1] on any port.
 const allowedOrigins = config.isProduction
   ? (config.clientUrl || '').split(',').map((url) => url.trim()).filter(Boolean)
   : [
       config.clientUrl,
       'http://localhost:5173',
       'http://127.0.0.1:5173',
+      'http://[::1]:5173',
       'http://localhost:5000',
       'http://127.0.0.1:5000',
     ].filter(Boolean);
 
+const isOriginAllowed = (origin) => {
+  if (!origin) return true;
+  if (!config.isProduction) {
+    // In development, allow any localhost, 127.0.0.1, [::1], and local LAN IPs on any port
+    if (/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(origin)) {
+      return true;
+    }
+    if (/^https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(origin)) {
+      return true;
+    }
+  }
+  return allowedOrigins.includes(origin);
+};
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (isOriginAllowed(origin)) {
         return callback(null, true);
       }
-      return callback(new Error(`CORS blocked for origin: ${origin}`), false);
+      // Pass null, false rather than Error to avoid 500 Internal Server Error on unallowed origins
+      return callback(null, false);
     },
     credentials: true,
+    optionsSuccessStatus: 204,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Request-Id'],
     exposedHeaders: ['X-Request-Id', 'X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'Retry-After'],

@@ -40,6 +40,14 @@ export const errorHandler = (err, req, res, next) => {
     message = 'Internal server error';
   }
 
+  // In development, log internal errors with stack traces to terminal
+  if (!config.isProduction && statusCode >= 500) {
+    console.error(`\x1b[31m[ERROR ${statusCode}]\x1b[0m ${req.method} ${req.originalUrl || req.url}:`, err.message || err);
+    if (err.stack) {
+      console.error(err.stack);
+    }
+  }
+
   // Consistent JSON response
   const responsePayload = {
     success: false,
