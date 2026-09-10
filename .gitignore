@@ -22,6 +22,8 @@ coverage
 .env.*
 server/.env
 server/.env.*
+!.env.example
+!server/.env.example
 
 # Database dumps (preserve application migrations and schemas)
 *.sql

@@ -34,30 +34,55 @@ app.use(
 );
 
 // 4. CORS Configuration
-// In production, strictly restrict to CLIENT_URL. In development, allow localhost/127.0.0.1/[::1] on any port.
+// Strip trailing slashes to prevent mismatches (e.g., https://site.netlify.app/ vs https://site.netlify.app)
+const cleanUrl = (url) => (url || '').trim().replace(/\/+$/, '');
+
+const configuredOrigins = (config.clientUrl || '')
+  .split(',')
+  .map(cleanUrl)
+  .filter(Boolean);
+
+const defaultDevOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://[::1]:5173',
+  'http://localhost:5000',
+  'http://127.0.0.1:5000',
+  'http://localhost:3000',
+];
+
 const allowedOrigins = config.isProduction
-  ? (config.clientUrl || '').split(',').map((url) => url.trim()).filter(Boolean)
-  : [
-      config.clientUrl,
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'http://[::1]:5173',
-      'http://localhost:5000',
-      'http://127.0.0.1:5000',
-    ].filter(Boolean);
+  ? configuredOrigins
+  : [...new Set([...configuredOrigins, ...defaultDevOrigins])];
 
 const isOriginAllowed = (origin) => {
+  // Allow non-browser requests (e.g. server-to-server, Render health checks, curl)
   if (!origin) return true;
+
+  const normalizedOrigin = cleanUrl(origin);
+
+  // In development, allow any localhost, 127.0.0.1, [::1], and local LAN IPs on any port
   if (!config.isProduction) {
-    // In development, allow any localhost, 127.0.0.1, [::1], and local LAN IPs on any port
-    if (/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(origin)) {
+    if (/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(normalizedOrigin)) {
       return true;
     }
-    if (/^https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(origin)) {
+    if (/^https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(normalizedOrigin)) {
       return true;
     }
   }
-  return allowedOrigins.includes(origin);
+
+  // Check exact origin match
+  if (allowedOrigins.includes(normalizedOrigin)) {
+    return true;
+  }
+
+  // Check Netlify subdomains/preview branches if any configured origin is a netlify.app domain
+  const hasNetlifyAllowed = allowedOrigins.some((allowed) => allowed.includes('.netlify.app'));
+  if (hasNetlifyAllowed && /^https:\/\/[a-zA-Z0-9-]+(\.netlify\.app)$/.test(normalizedOrigin)) {
+    return true;
+  }
+
+  return false;
 };
 
 app.use(

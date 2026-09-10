@@ -8,7 +8,7 @@ let pool = null;
  */
 export const getPool = () => {
   if (!pool) {
-    pool = mysql.createPool({
+    const poolOptions = {
       host: config.db.host,
       port: config.db.port,
       database: config.db.database,
@@ -19,7 +19,13 @@ export const getPool = () => {
       queueLimit: config.db.queueLimit,
       enableKeepAlive: true,
       keepAliveInitialDelay: 10000,
-    });
+    };
+
+    if (config.db.ssl) {
+      poolOptions.ssl = config.db.ssl;
+    }
+
+    pool = mysql.createPool(poolOptions);
   }
   return pool;
 };

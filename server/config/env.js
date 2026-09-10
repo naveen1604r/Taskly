@@ -8,6 +8,27 @@ const __dirname = path.dirname(__filename);
 // Load .env from server directory
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
+// Determine if SSL is required for MySQL connection
+const getDbSslConfig = () => {
+  if (process.env.DB_SSL === 'true' || process.env.DB_SSL === '1') {
+    return { rejectUnauthorized: false };
+  }
+  if (process.env.DB_SSL === 'false' || process.env.DB_SSL === '0') {
+    return undefined;
+  }
+  // Auto-enable SSL in production when connecting to a remote host (cloud MySQL providers require SSL)
+  const host = process.env.DB_HOST || '';
+  if (
+    process.env.NODE_ENV === 'production' &&
+    host &&
+    host !== 'localhost' &&
+    host !== '127.0.0.1'
+  ) {
+    return { rejectUnauthorized: false };
+  }
+  return undefined;
+};
+
 export const config = {
   port: parseInt(process.env.PORT, 10) || 5000,
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -19,6 +40,7 @@ export const config = {
     database: process.env.DB_NAME || 'taskly',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
+    ssl: getDbSslConfig(),
     connectionLimit: 10,
     waitForConnections: true,
     queueLimit: 0,
@@ -48,7 +70,10 @@ export const validateEnv = () => {
 
     if (!process.env.DB_HOST) {
       errors.push('DB_HOST is required in production.');
+    } else if (process.env.DB_HOST === 'localhost' || process.env.DB_HOST === '127.0.0.1') {
+      warnings.push("DB_HOST is set to 'localhost'. Render cannot access your local PC's MySQL database. Please provide a remote cloud MySQL host.");
     }
+
     if (!process.env.DB_USER) {
       errors.push('DB_USER is required in production.');
     }
