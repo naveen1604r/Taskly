@@ -3,7 +3,7 @@ import config, { validateEnv } from './config/env.js';
 import { testDbConnection, closePool } from './config/db.js';
 import { initializeDatabase } from './database/initDb.js';
 
-const PORT = process.env.PORT || config.port || 5000;
+const PORT = process.env.PORT || config.port || 3000;
 
 
 /**
