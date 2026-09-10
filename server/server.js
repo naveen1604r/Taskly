@@ -5,6 +5,7 @@ import { initializeDatabase } from './database/initDb.js';
 
 const PORT = process.env.PORT || config.port || 5000;
 
+
 /**
  * Start the Taskly Express Server
  */
