@@ -7,7 +7,7 @@
 
 import { getToken, clearAuthStorage } from '../utils/authStorage';
 
-const rawApiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000').trim().replace(/\/+$/, '');
+const rawApiUrl = (import.meta.env.VITE_API_URL || 'nodejs-production-f937.up.railway.app').trim().replace(/\/+$/, '');
 const API_BASE_URL = rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl}/api`;
 
 let authToken = null;
